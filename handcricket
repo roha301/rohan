@@ -1,0 +1,130 @@
+import random
+import time
+import pyfiglet
+result = pyfiglet.figlet_format("Hand cricket") 
+
+result1 = pyfiglet.figlet_format("let's  Play..") 
+print(result)
+time.sleep(1.5) 
+print(result1)
+time.sleep(1.5)
+
+
+    
+def commentary(event): #This line defines a function called commentary that takes an event string as input.
+
+    print(f"Commentator: {event}") #This line prints a commentary message to the console, indicating an event that occurred during the game.
+
+def display_winner(winner): #This line defines a function called display_winner that takes a winner string as input.
+    print(f"\n*** {winner} has won the match! ***\n") #This line prints a message indicating the winner of the match to the console.
+
+def play_cricket_game():#This line defines the main function play_cricket_game, which contains the logic for running the cricket game.
+    
+    
+
+    global player_name #This line declares a global variable player_name, which will store the name of the player.
+    player_name = input("Enter your name: ")
+    print(f"Welcome to the game, {player_name}!")
+
+    print('''\n_________The rules of the game are_________
+1. There will be a toss between you and the computer. Choose either heads(h) or tails(t) by entering 'h' or 't'.
+2. If you win the toss, you can choose to bat or bowl.
+3. If you're batting, enter a number between 1 to 10 to score runs. If your number matches the computer's number, you're out.
+4. The match will be of 10 overs, i.e., 60 balls.
+5. After batting, you have to bowl and defend your score by choosing the same number as the computer.
+6. Enjoy the game!\n''')
+
+    toss = input("Welcome to the toss, please choose heads(h) or tails(t):\n").lower()
+    toss_result = random.choice(['h', 't'])
+
+    if toss == toss_result:
+        print("You have won the toss!")
+        bat_or_bowl = input("Would you like to bat(b) or bowl(bo)? ")
+
+        if bat_or_bowl == "b":
+            commentary("You chose to bat first.")
+            player_runs, player_balls = bat()
+            commentary(f"{player_name} scored {player_runs} runs in {player_balls} balls.")
+
+            computer_runs, computer_balls = bowl(player_runs)
+            display_winner(player_name if player_runs > computer_runs else "Computer")
+
+        elif bat_or_bowl == "bo":
+            commentary("You chose to bowl first.")
+            computer_runs, computer_balls = bowl()
+            commentary(f"Computer scored {computer_runs} runs in {computer_balls} balls.")
+
+            player_runs, player_balls = bat(computer_runs)
+            display_winner(player_name if player_runs > computer_runs else "Computer")
+
+    else:
+        print("Computer has won the toss!")
+        commentary("Computer chose to bat first.")
+
+        computer_runs, computer_balls = bat()
+        commentary(f"Computer scored {computer_runs} runs in {computer_balls} balls.")
+
+        player_runs, player_balls = bowl(computer_runs)
+        display_winner(player_name if player_runs > computer_runs else "Computer")
+
+def bat(opponent_score=0):
+    balls = 60
+    runs = 0
+    balls_played = 0
+
+    print("\n------Your batting------")
+    while balls_played < balls:
+        ball = int(input("Enter a number to bat (1-10): "))
+
+        if ball < 1 or ball > 10:
+            print("Please enter a number between 1 to 10.")
+            continue
+
+        computer_ball = random.randint(1, 10)
+        if ball == computer_ball:
+            print(f"Your number: {ball}, Computer's number: {computer_ball}")
+            print("You're out!")
+            break
+
+        runs += ball
+        balls_played += 1
+        print(f"Your number: {ball}, Computer's number: {computer_ball}")
+        print(f"Your total runs: {runs}\n")
+
+        if opponent_score and runs > opponent_score:
+            break
+
+    return runs, balls_played
+
+def bowl(opponent_score=0):
+    balls = 60
+    runs = 0
+    balls_bowled = 0
+
+    print("\n------Your bowling------")
+    while balls_bowled < balls:
+        ball = int(input("Enter runs to bowl (1-10): "))
+
+        if ball < 1 or ball > 10:
+            print("Please enter a number between 1 to 10.")
+            continue
+
+        computer_ball = random.randint(1, 10)
+        if ball == computer_ball:
+            print(f"Your number: {ball}, Computer's number: {computer_ball}")
+            print("Computer is out!")
+            break
+
+        runs += computer_ball
+        balls_bowled += 1
+        print(f"Your number: {ball}, Computer's number: {computer_ball}")
+        print(f"Computer's total runs: {runs}\n")
+
+        if opponent_score and runs > opponent_score:
+            break
+
+    return runs, balls_bowled
+
+if __name__ == "__main__":
+    play_cricket_game()
+    input("Press any key to exit.")
